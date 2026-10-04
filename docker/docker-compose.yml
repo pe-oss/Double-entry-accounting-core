@@ -14,8 +14,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-ketoan_admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Can khai bao POSTGRES_PASSWORD trong file .env}
       POSTGRES_DB: ${POSTGRES_DB:-ketoan_core}
-      TZ: Asia/Ho_Chi_Minh
-      PGTZ: Asia/Ho_Chi_Minh
+      TZ: UTC
+      PGTZ: UTC
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
