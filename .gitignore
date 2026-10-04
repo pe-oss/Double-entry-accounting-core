@@ -1,0 +1,11 @@
+.env
+.env.local
+node_modules/
+__pycache__/
+*.pyc
+credentials.json
+token.pickle
+thiet_ke_tu_sheets.csv
+thiet_ke_tu_docs.md
+venv/
+docker/pgdata/
