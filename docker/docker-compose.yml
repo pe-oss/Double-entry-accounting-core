@@ -1,28 +1,28 @@
 # ============================================================
-# Lõi Kế toán Kép - Môi trường CSDL PostgreSQL 16
-# Chạy:   docker compose --env-file ../.env up -d   (từ thư mục docker/)
-# Dừng:   docker compose down
+# Double-Entry Accounting Core - PostgreSQL 16
+# Chạy (từ thư mục gốc dự án):
+#   docker compose -f docker/docker-compose.yml --env-file .env up -d
+# Dừng:
+#   docker compose -f docker/docker-compose.yml --env-file .env down
+# Lược đồ CSDL được quản lý bằng Alembic (thư mục migrations/), không đặt ở đây.
 # ============================================================
-name: loi-ke-toan-kep
+name: accounting-core
 
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: ketoan_postgres
+    container_name: accounting_core_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-ketoan_admin}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Can khai bao POSTGRES_PASSWORD trong file .env}
-      POSTGRES_DB: ${POSTGRES_DB:-ketoan_core}
+      POSTGRES_DB: ${POSTGRES_DB:-accounting_core}
+      POSTGRES_USER: ${POSTGRES_USER:-acc_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-acc_secure_password_2026}
       TZ: UTC
       PGTZ: UTC
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      # Dữ liệu được lưu bền vững, không mất khi tắt/xóa container
       - pgdata:/var/lib/postgresql/data
-      # Các script SQL (schema, SP) trong thư mục này sẽ tự chạy khi DB khởi tạo lần đầu
-      - ./init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
@@ -31,4 +31,4 @@ services:
 
 volumes:
   pgdata:
-    name: ketoan_pgdata
+    name: accounting_core_pgdata
