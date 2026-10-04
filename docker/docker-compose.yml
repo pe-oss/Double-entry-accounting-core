@@ -1,0 +1,34 @@
+# ============================================================
+# Lõi Kế toán Kép - Môi trường CSDL PostgreSQL 16
+# Chạy:   docker compose --env-file ../.env up -d   (từ thư mục docker/)
+# Dừng:   docker compose down
+# ============================================================
+name: loi-ke-toan-kep
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ketoan_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ketoan_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Can khai bao POSTGRES_PASSWORD trong file .env}
+      POSTGRES_DB: ${POSTGRES_DB:-ketoan_core}
+      TZ: Asia/Ho_Chi_Minh
+      PGTZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # Dữ liệu được lưu bền vững, không mất khi tắt/xóa container
+      - pgdata:/var/lib/postgresql/data
+      # Các script SQL (schema, SP) trong thư mục này sẽ tự chạy khi DB khởi tạo lần đầu
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    name: ketoan_pgdata
